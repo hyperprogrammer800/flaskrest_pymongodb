@@ -143,7 +143,13 @@ class Template(Resource):
             return str(list(template.find({"owner_id" : owner_id})))
         except:
             return "invalid auth"
-
+        
+class Home(Resource):
+    def get(self):
+        return "Home"
+    
+    
+api.add_resource(Home, "/")
 api.add_resource(Register, "/register/")
 api.add_resource(Login, "/login/")
 api.add_resource(Template, "/template/", "/template/<int:template_id>")
