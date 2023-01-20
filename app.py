@@ -1,11 +1,8 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
 from pymongo import MongoClient
-from dotenv import load_dotenv, find_dotenv
-import os, jwt
+import jwt
 
-load_dotenv(find_dotenv())
-password = os.environ.get('MONGODB_PWD')
 client = MongoClient(f"mongodb+srv://hyperprogrammer800:flaskapi123@cluster0.0mrqopb.mongodb.net/?retryWrites=true&w=majority")
 
 app = Flask(__name__)
