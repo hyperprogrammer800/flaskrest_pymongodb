@@ -155,4 +155,4 @@ api.add_resource(Login, "/login/")
 api.add_resource(Template, "/template/", "/template/<int:template_id>")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(debug=True)
