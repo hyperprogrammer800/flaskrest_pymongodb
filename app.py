@@ -142,9 +142,7 @@ class Template(Resource):
             owner_id = token.find_one({"Authorization" : args.Authorization.split(" ")[1]}).get('owner_id')
             template = production.template
             template.delete_one({"owner_id" : owner_id,"template_id" : template_id})
-            delete_count = token.find_one({"owner_id" : owner_id}).get('delete_count')
-            delete_count += 1
-            token.update_one({"owner_id" : owner_id}, {"delete_count" : delete_count})
+            token.update_one({"owner_id" : owner_id}, { "$inc" : {"delete_count" : 1}})
             return str(token.find_one({"owner_id" : owner_id}).get('delete_count'))
         except:
             return "invalid auth"
