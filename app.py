@@ -41,7 +41,7 @@ class Login(Resource):
                 token = production.token
                 if not token.find_one({"Authorization" : str(encoded)[2:-1]}):
                     owner_id = user.find_one({"email" : args.email}).get('_id')
-                    doc = {"Authorization" : str(encoded)[2:-1], "owner_id" : owner_id}
+                    doc = {"Authorization" : str(encoded)[2:-1], "delete_count" : 0, "owner_id" : owner_id}
                     new_tok = token.insert_one(doc)
                     return str(encoded)[2:-1]
                 else:
@@ -87,7 +87,7 @@ class Template(Resource):
                 if owner_id == user_id:
                     template = production.template
                     count = template.count_documents(filter={"owner_id" : owner_id})
-                    delete_count = token.find_one({"Authorization" : args.Authorization.split(" ")[1]}).get('delete_count')
+                    delete_count = token.find_one({"owner_id" : owner_id}).get('delete_count')
                     if count:
                         template_id = count
                         if delete_count:
@@ -142,13 +142,10 @@ class Template(Resource):
             owner_id = token.find_one({"Authorization" : args.Authorization.split(" ")[1]}).get('owner_id')
             template = production.template
             template.delete_one({"owner_id" : owner_id,"template_id" : template_id})
-            delete_count = token.find_one({"Authorization" : args.Authorization.split(" ")[1]}).get('delete_count')
-            if delete_count:
-                delete_count += 1
-                token.insert_one({"delete_count" : delete_count})
-            else:
-                token.insert_one({"delete_count" : 1})
-            return str(list(template.find({"owner_id" : owner_id})))
+            delete_count = token.find_one({"owner_id" : owner_id}).get('delete_count')
+            delete_count += 1
+            token.update_one({"owner_id" : owner_id}, {"delete_count" : delete_count})
+            return str(token.find_one({"owner_id" : owner_id}).get('delete_count'))
         except:
             return "invalid auth"
         
