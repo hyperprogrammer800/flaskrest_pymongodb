@@ -51,6 +51,9 @@ class Login(Resource):
 
 
 class Template(Resource):
+    
+    del_template_id = 0
+    
     def get(self,template_id=None):
         production = client.production
         token = production.token
@@ -137,7 +140,7 @@ class Template(Resource):
             owner_id = token.find_one({"Authorization" : args.Authorization.split(" ")[1]}).get('owner_id')
             template = production.template
             template.delete_one({"owner_id" : owner_id,"template_id" : template_id})
-            global del_template_id+=1
+            del_template_id+=1
             return str(list(template.find({"owner_id" : owner_id})))
         except:
             return "invalid auth"
