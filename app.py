@@ -87,7 +87,6 @@ class Template(Resource):
                 if owner_id == user_id:
                     template = production.template
                     count = template.count_documents(filter={"owner_id" : owner_id})
-                    template_id = 1
                     if count:
                         template_id = count + (max_id - count)
                         template_id +=1
