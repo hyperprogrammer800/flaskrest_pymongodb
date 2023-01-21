@@ -87,12 +87,14 @@ class Template(Resource):
                 if owner_id == user_id:
                     template = production.template
                     count = template.count_documents(filter={"owner_id" : owner_id})
+                    delete_count = token.find_one({"Authorization" : args.Authorization.split(" ")[1]}).get('delete_count')
                     if count:
-                        template_id = count + (max_id - count)
+                        template_id = count
+                        if delete_count:
+                            template_id += delete_count
                         template_id +=1
-                        max_id = template_id
                     else:
-                        template_id,max_id = 1,1
+                        template_id = 1
                     doc = {"template_id" : template_id, "template_name" : args.template_name, "subject" : args.subject, "body" : args.body, "owner_id" : owner_id}
                     temp = template.insert_one(doc)
                     data = template.find({"owner_id" : owner_id})
@@ -140,6 +142,12 @@ class Template(Resource):
             owner_id = token.find_one({"Authorization" : args.Authorization.split(" ")[1]}).get('owner_id')
             template = production.template
             template.delete_one({"owner_id" : owner_id,"template_id" : template_id})
+            delete_count = token.find_one({"Authorization" : args.Authorization.split(" ")[1]}).get('delete_count')
+            if delete_count:
+                delete_count += 1
+                token.insert_one({"delete_count" : delete_count})
+            else:
+                token.insert_one({"delete_count" : 1})
             return str(list(template.find({"owner_id" : owner_id})))
         except:
             return "invalid auth"
