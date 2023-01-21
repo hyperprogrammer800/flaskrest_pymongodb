@@ -101,7 +101,7 @@ class Template(Resource):
                 else:
                     return f'{str(owner_id)},{str(user_id)}'
             except:
-                return "invalid creds"
+                return "invalid creds" + str(owner_id) + str(user_id)
         except:
             return "invalid auth"
     def put(self,template_id):
