@@ -147,9 +147,9 @@ class Home(Resource):
     
     
 api.add_resource(Home, "/")
-api.add_resource(Register, "/register/")
-api.add_resource(Login, "/login/")
-api.add_resource(Template, "/template/", "/template/<int:template_id>")
+api.add_resource(Register, "/register")
+api.add_resource(Login, "/login")
+api.add_resource(Template, "/template", "/template/<int:template_id>")
 
 if __name__ == "__main__":
     app.run(debug=True)
